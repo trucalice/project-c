@@ -2,6 +2,13 @@
 #include <string.h>
 #include "function.h"
 
+void mainMenu() {
+    printf("=== MENU CHINH ===\n");
+    printf("[1] Quan ly sach\n");
+    printf("[0] Thoat\n");
+    printf("Nhap lua chon: ");
+}
+
 void menu() {
     printf("*** Quan Ly Sach ***\n");
     printf("[1] Them sach moi\n");
@@ -31,10 +38,13 @@ void inputBook(book arr[], int *count) {
 }
 
 void displayBooks(book arr[], int count) {
-    printf("\n%-10s %-30s %-15s %-20s %-10s\n", "ID", "Ten", "Ngay PH", "Tac Gia", "Gia");
-    printf("--------------------------------------------------------------------------\n");
-    for (int i = 0; i < count; i++) {
-        printf("%-10s %-30s %-15s %-20s %-10.2f\n", arr[i].id, arr[i].title, arr[i].releaseDate, arr[i].author, arr[i].price);
+	printf("|============|=================|=================|======================|============|");
+    printf("\n| %-10s | %-15s | %-15s | %-20s | %-11s|\n", "ID", "Ten", "Ngay PH", "Tac Gia", "Gia");
+    printf("|============|=================|=================|======================|============|\n");
+    int i = 0;
+    for (;i < count; i++) {
+    printf("| %-10s | %-15s | %-15s | %-20s | %-10.2f |\n", arr[i].id, arr[i].title, arr[i].releaseDate, arr[i].author, arr[i].price);
+    printf("|------------|-----------------|-----------------|----------------------|------------|\n");
     }
 }
 
@@ -42,7 +52,8 @@ void editBook(book arr[], int count) {
     char id[10];
     printf("Nhap ID sach can chinh sua: ");
     scanf("%s", id);
-    for (int i = 0; i < count; i++) {
+    int i = 0;
+    for (;i < count; i++) {
         if (strcmp(arr[i].id, id) == 0) {
             printf("Chinh sua thong tin sach %s\n", arr[i].title);
             printf("Nhap ten moi: ");
@@ -64,13 +75,15 @@ void deleteBook(book arr[], int *count) {
     char id[10];
     printf("Nhap ID sach can xoa: ");
     scanf("%s", id);
-    for (int i = 0; i < *count; i++) {
+    int i = 0;
+    for (; i < *count; i++) {
         if (strcmp(arr[i].id, id) == 0) {
             char confirm;
             printf("Ban co chac chan muon xoa sach voi ID %s? (y/n): ", id);
             scanf(" %c", &confirm);
+            int j = i;
             if (confirm == 'y' || confirm == 'Y') {
-                for (int j = i; j < *count - 1; j++) {
+                for (; j < *count - 1; j++) {
                     arr[j] = arr[j + 1];
                 }
                 (*count)--;
@@ -88,13 +101,16 @@ void searchBook(book arr[], int count) {
     char title[50];
     printf("Nhap ten sach can tim: ");
     scanf(" %[^\n]", title);
-    printf("\n%-10s %-30s %-15s %-20s %-10s\n", "ID", "Ten", "Ngay PH", "Tac Gia", "Gia");
-    printf("--------------------------------------------------------------------------\n");
+    printf("|============|=================|=================|======================|============|\n");
+    printf("| %-10s | %-15s | %-15s | %-20s | %-11s|\n", "ID", "Ten", "Ngay PH", "Tac Gia", "Gia");
+    printf("|============|=================|=================|======================|============|\n");
     int found = 0;
-    for (int i = 0; i < count; i++) {
+    int i = 0;
+    for (; i < count; i++) {
         if (strstr(arr[i].title, title) != NULL) {
-            printf("%-10s %-30s %-15s %-20s %-10.2f\n", arr[i].id, arr[i].title, arr[i].releaseDate, arr[i].author, arr[i].price);
+            printf("| %-10s | %-15s | %-15s | %-20s | %-10.2f |\n", arr[i].id, arr[i].title, arr[i].releaseDate, arr[i].author, arr[i].price);
             found = 1;
+            printf("|------------|-----------------|-----------------|----------------------|------------|\n");
         }
     }
     if (!found) {
@@ -106,8 +122,10 @@ void sortBooks(book arr[], int count) {
     int order;
     printf("Chon thu tu sap xep: 1. Tang dan 2. Giam dan: ");
     scanf("%d", &order);
-    for (int i = 0; i < count - 1; i++) {
-        for (int j = i + 1; j < count; j++) {
+    int i = 0;
+    int j = i + 1;
+    for (; i < count - 1; i++) {
+        for (; j < count; j++) {
             if ((order == 1 && arr[i].price > arr[j].price) || (order == 2 && arr[i].price < arr[j].price)) {
                 book temp = arr[i];
                 arr[i] = arr[j];
@@ -117,4 +135,41 @@ void sortBooks(book arr[], int count) {
     }
     printf("Sap xep sach theo gia tien thanh cong!\n");
 }
+
+void saveToFile(book arr[], int count) {
+    FILE *fptr = fopen("books.txt", "w"); // Mo file de ghi (ghi de noi dung cu)
+    if (fptr == NULL) {
+        printf("Loi! Khong the mo file de ghi.\n");
+        return;
+    }
+    int i = 0;
+    for (; i < count; i++) {
+        fprintf(fptr, "%s|%s|%s|%s|%.2f\n",
+                arr[i].id, arr[i].title, arr[i].releaseDate, arr[i].author, arr[i].price);
+    }
+
+    fclose(fptr);
+    printf("Du lieu da duoc luu vao file 'books.txt' thanh cong!\n");
+}
+
+void loadFromFile(book arr[], int *count) {
+    FILE *fptr = fopen("books.txt", "r"); // Mo file de doc
+    if (fptr == NULL) {
+        printf("Khong tim thay file 'books.txt'. He thong se tao file moi khi luu du lieu.\n");
+        return;
+    }
+
+    *count = 0;
+    while (fscanf(fptr, "%[^|]|%[^|]|%[^|]|%[^|]|%f\n",
+                  arr[*count].id, arr[*count].title, arr[*count].releaseDate,
+                  arr[*count].author, &arr[*count].price) == 5) {
+        (*count)++;
+    }
+
+    fclose(fptr);
+    printf("Du lieu da duoc tai tu file 'books.txt'.\n");
+}
+
+
+
 
