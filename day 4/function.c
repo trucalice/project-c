@@ -26,7 +26,7 @@ void inputBook(book arr[], int *count) {
     book newBook;
     int i, isDuplicate;
 
-    // Ki?m tra trùng ID
+    // Kiem tra trùng ID
     do {
         isDuplicate = 0;
         printf("Nhap ID sach (toi da 10 ky tu): ");
@@ -47,7 +47,7 @@ void inputBook(book arr[], int *count) {
         }
     } while (isDuplicate);
 
-    // Ki?m tra trùng tên sách
+    // Kiem tra trùng tên sách
     do {
         isDuplicate = 0;
         printf("Nhap ten sach (toi da 50 ky tu): ");
@@ -68,7 +68,7 @@ void inputBook(book arr[], int *count) {
         }
     } while (isDuplicate);
 
-    // Nh?p ngày phát hành
+    // Nhap ngày phát hành
     do {
         printf("Nhap ngay phat hanh (toi da 15 ky tu): ");
         scanf("%14s", newBook.releaseDate);
@@ -77,7 +77,7 @@ void inputBook(book arr[], int *count) {
         }
     } while (strlen(newBook.releaseDate) >= 15);
 
-    // Nh?p tên tác gi?
+    // Nhap tên tác gi?
     do {
         printf("Nhap ten tac gia (toi da 30 ky tu): ");
         scanf(" %[^\n]s", newBook.author);
@@ -86,14 +86,14 @@ void inputBook(book arr[], int *count) {
         }
     } while (strlen(newBook.author) >= 30);
 
-    // Nh?p giá sách
+    // Nhap giá sách
     printf("Nhap gia tien: ");
     while (scanf("%f", &newBook.price) != 1 || newBook.price < 0) {
         printf("Loi: Gia tien khong hop le! Vui long nhap lai: ");
-        while (getchar() != '\n'); // Xóa b? d?m
+        while (getchar() != '\n'); // Xóa bo dem
     }
 
-    // Thêm sách vào m?ng
+    // Thêm sách vào mang
     arr[*count] = newBook;
     (*count)++;
     printf("Them sach thanh cong!\n");
@@ -172,14 +172,15 @@ void searchBook(book arr[], int count) {
     for (; i < count; i++) {
         if (strstr(arr[i].title, title) != NULL) {
             printf("| %-10s | %-15s | %-15s | %-20s | %-10.2f |\n", arr[i].id, arr[i].title, arr[i].releaseDate, arr[i].author, arr[i].price);
-            found = 1;
             printf("|------------|-----------------|-----------------|----------------------|------------|\n");
+            found = 1;
         }
     }
     if (!found) {
         printf("Khong tim thay sach nao voi ten %s!\n", title);
     }
 }
+
 
 void sortBooks(book arr[], int count) {
     int order;
