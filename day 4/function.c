@@ -26,6 +26,7 @@ void inputBook(book arr[], int *count) {
     book newBook;
     int i, isDuplicate;
 
+    // Ki?m tra trùng ID
     do {
         isDuplicate = 0;
         printf("Nhap ID sach (toi da 10 ky tu): ");
@@ -46,14 +47,28 @@ void inputBook(book arr[], int *count) {
         }
     } while (isDuplicate);
 
+    // Ki?m tra trùng tên sách
     do {
+        isDuplicate = 0;
         printf("Nhap ten sach (toi da 50 ky tu): ");
         scanf(" %[^\n]s", newBook.title);
+
         if (strlen(newBook.title) >= 50) {
             printf("Loi: Ten sach qua dai! Vui long nhap lai.\n");
+            isDuplicate = 1;
+            continue;
         }
-    } while (strlen(newBook.title) >= 50);
 
+        for (i = 0; i < *count; i++) {
+            if (strcmp(arr[i].title, newBook.title) == 0) {
+                printf("Loi: Ten sach da ton tai. Vui long nhap lai!\n");
+                isDuplicate = 1;
+                break;
+            }
+        }
+    } while (isDuplicate);
+
+    // Nh?p ngày phát hành
     do {
         printf("Nhap ngay phat hanh (toi da 15 ky tu): ");
         scanf("%14s", newBook.releaseDate);
@@ -62,6 +77,7 @@ void inputBook(book arr[], int *count) {
         }
     } while (strlen(newBook.releaseDate) >= 15);
 
+    // Nh?p tên tác gi?
     do {
         printf("Nhap ten tac gia (toi da 30 ky tu): ");
         scanf(" %[^\n]s", newBook.author);
@@ -70,12 +86,14 @@ void inputBook(book arr[], int *count) {
         }
     } while (strlen(newBook.author) >= 30);
 
+    // Nh?p giá sách
     printf("Nhap gia tien: ");
     while (scanf("%f", &newBook.price) != 1 || newBook.price < 0) {
         printf("Loi: Gia tien khong hop le! Vui long nhap lai: ");
-        while (getchar() != '\n'); // Xoa bo dem
+        while (getchar() != '\n'); // Xóa b? d?m
     }
 
+    // Thêm sách vào m?ng
     arr[*count] = newBook;
     (*count)++;
     printf("Them sach thanh cong!\n");
